@@ -1,3 +1,35 @@
+name: Build OpenWrt Firmware
+
+on:
+  workflow_dispatch:
+
+# === 添加这个权限部分 ===
+permissions:
+  contents: write    # 关键：允许创建 releases
+  id-token: write   # 可能需要
+  checks: write     # 可选
+  deployments: write # 可选
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    # 也可以在 job 级别添加权限
+    permissions:
+      contents: write
+      
+    steps:
+      # ... 其他步骤 ...
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          name: Release ${{ steps.tag.outputs.release_tag }}
+          # 确保使用正确的 token
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: false
+          prerelease: false
 #
 # https://github.com/P3TERX/Actions-OpenWrt
 #
